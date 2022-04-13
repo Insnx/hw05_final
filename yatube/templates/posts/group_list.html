@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}{{ group }}{% endblock title %}
+{% block content %}
+      <!-- класс py-5 создает отступы сверху и снизу блока -->
+        <h1>{{ group.title }}</h1>
+        <p>
+          {{ group.description }}
+        </p>
+        {% for post in page_obj %}
+          <article>
+            {% include './post.html' %}     
+          </article>
+          <br>
+            <a href="{% url 'posts:post_detail' post.pk %}">Подробная информация</a>
+          <br>
+            <a href="{% url 'posts:profile' post.author %}">Все посты пользователя : {{ post.author.get_full_name }}</a>
+          <br>
+          {% if not forloop.last %}<hr>{% endif %}
+        {% endfor %}
+        {% include 'posts/includes/paginator.html'  %}
+{% endblock content %}
+
+      
