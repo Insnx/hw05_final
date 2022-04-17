@@ -36,7 +36,7 @@ def group_posts(request, slug):
 def profile(request, username):
     """Посты пользователя."""
     author = get_object_or_404(User, username=username)
-    posts = Post.objects.filter(author=author)
+    posts = author.posts.all()
     posts_count = author.posts.count()
     paginator = Paginator(posts, pagi)
     page_number = request.GET.get('page')
@@ -76,7 +76,9 @@ def post_detail(request, post_id):
 @login_required
 def post_create(request):
     """Создание нового поста."""
-    form = PostForm(request.POST or None)
+    form = PostForm(
+        request.POST or None,
+        files=request.FILES or None,)
 
     if form.is_valid():
         form.instance.author = request.user

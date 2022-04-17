@@ -100,6 +100,34 @@ class TaskCreateFormTests(TestCase):
         self.assertEqual(form_data['group'], last_object.group.pk)
         self.assertEqual(form_data['image'], self.uploaded.name)
 
+    def test_create_post_empty_image(self):
+        """тест на пустую картинку."""
+        ssmall_empty = (b'')
+
+        empty_image = SimpleUploadedFile(
+            name='small_empty.gif',
+            content=ssmall_empty,
+            content_type='image/gif'
+        )
+        form_data = {
+            'text': self.post.text,
+            'group': self.group.pk,
+            'image': empty_image,
+        }
+
+        response = self.authorized_client.post(
+            reverse('posts:post_create'),
+            data=form_data,
+            follow=True
+        )
+
+        self.assertFormError(
+            response,
+            'form',
+            'image',
+            'Отправленный файл пуст.'
+        )
+
     def test_edit_post(self):
         """Валидная форма редактирует запись в Post."""
         form_data = {
